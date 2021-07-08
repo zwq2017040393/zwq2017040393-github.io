@@ -21,4 +21,18 @@
         <tag>试验</tag>
       </tags>
   </entry>
+  <entry>
+    <title>FCN模型论文笔记</title>
+    <url>/2021/07/08/FCN%E6%A8%A1%E5%9E%8B%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>论文题目《Fully Convolutional Networks for Semantic Segmentation》<br>论文地址<br><em>斜体文本</em><br><em>斜体文本</em><br><strong>粗体文本</strong><br><strong>粗体文本</strong><br><em><strong>粗斜体文本</strong></em><br><em><strong>粗斜体文本</strong></em>  </p>
+]]></content>
+      <categories>
+        <category>计算机视觉</category>
+        <category>语义分割</category>
+      </categories>
+      <tags>
+        <tag>计算机视觉</tag>
+        <tag>图像语义分割</tag>
+      </tags>
+  </entry>
 </search>
