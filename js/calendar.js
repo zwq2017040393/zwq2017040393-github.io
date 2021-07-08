@@ -833,7 +833,7 @@ function getcalendar() {
     loadFlag = 0;
     changeMonth = 13;
     mycalendar = null;
-    $.getJSON("https://raw.githubusercontent.com/1260408088/1260408088.github.io/master/calendar.json", function (data) {
+    $.getJSON("/calendar.json", function (data) {
         mycalendar = data;
         // 然后继续用content就行了
     })
