@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="数学,损失函数,深度学习," />
 
 
 
@@ -79,15 +79,23 @@
 
 
 
-<meta name="description" content="这里将展示我的在学习中收获的一些计算机知识，包括但不局限于计算机视觉，深度学习，人工智能,python, c++,算法以及一些网站开发的知识。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="ZWQ&#39;s zoom">
-<meta property="og:url" content="http://example.com/archives/2021/07/index.html">
+<meta name="description" content="在分类问题中，交叉熵损失函数常常被应用，然而作为初学者，我却对它了解非常浅薄，希望借着开通博客的热情，再一次好好学一下这个函数。我计划将通过信息论的知识引入，再逐渐推导出交叉熵函数的公式，明白它的意义，再尽量理解为什么分类问题更多的用交叉熵损失函数。   先参考《深度学习》花书中关于的信息论的描述：信息论的基本想法是一个不太可能的事情居然发生了，要比一个非常可能的事件发生，能提供更多的信息。 消">
+<meta property="og:type" content="article">
+<meta property="og:title" content="交叉熵损失函数的学习">
+<meta property="og:url" content="http://example.com/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="ZWQ&#39;s zoom">
-<meta property="og:description" content="这里将展示我的在学习中收获的一些计算机知识，包括但不局限于计算机视觉，深度学习，人工智能,python, c++,算法以及一些网站开发的知识。">
+<meta property="og:description" content="在分类问题中，交叉熵损失函数常常被应用，然而作为初学者，我却对它了解非常浅薄，希望借着开通博客的热情，再一次好好学一下这个函数。我计划将通过信息论的知识引入，再逐渐推导出交叉熵函数的公式，明白它的意义，再尽量理解为什么分类问题更多的用交叉熵损失函数。   先参考《深度学习》花书中关于的信息论的描述：信息论的基本想法是一个不太可能的事情居然发生了，要比一个非常可能的事件发生，能提供更多的信息。 消">
 <meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/y_log(x).png">
+<meta property="og:image" content="http://example.com/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/XNS.jpg">
+<meta property="article:published_time" content="2021-07-10T10:51:00.000Z">
+<meta property="article:modified_time" content="2021-07-11T12:27:45.406Z">
 <meta property="article:author" content="Zhanweiqi">
+<meta property="article:tag" content="数学">
+<meta property="article:tag" content="损失函数">
+<meta property="article:tag" content="深度学习">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/y_log(x).png">
 
 
 
@@ -117,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/archives/2021/07/"/>
+  <link rel="canonical" href="http://example.com/2021/07/10/交叉熵损失函数的学习/"/>
 
 
 
 
 
-  <title>归档 | ZWQ's zoom</title>
+  <title>交叉熵损失函数的学习 | ZWQ's zoom</title>
   
 
 
@@ -152,7 +160,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -290,148 +298,268 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mytouxiang.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZWQ's zoom">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">交叉熵损失函数的学习</h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-10T18:51:00+08:00">
+                2021-07-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 3 篇日志。 继续努力。
-      </span>
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
 
-      
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">损失函数</span>
+                  </a>
+                </span>
 
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2021">2021</h1>
-          </div>
-        
-        
 
-        
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/07/10/交叉熵损失函数的学习/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/" itemprop="url">
-              
-                <span itemprop="name">交叉熵损失函数的学习</span>
-              
-            </a>
-        
-      </h2>
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o">本站总阅读量</i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2021-07-10T18:51:00+08:00"
-              content="2021-07-10" >
-          07-10
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+          
 
+        </div>
+      </header>
+    
 
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2021/07/08/%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2%E7%BB%8F%E5%85%B8%E8%AE%BA%E6%96%87%E5%B0%8F%E7%BB%93/" itemprop="url">
-              
-                <span itemprop="name">语义分割经典论文小结</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2021-07-08T10:32:45+08:00"
-              content="2021-07-08" >
-          07-08
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2021/07/06/hello-world/" itemprop="url">
-              
-                <span itemprop="name">Hello World</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2021-07-06T15:22:57+08:00"
-              content="2021-07-06" >
-          07-06
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
+      
+        <blockquote>
+<p>在分类问题中，交叉熵损失函数常常被应用，然而作为初学者，我却对它了解非常浅薄，希望借着开通博客的热情，再一次好好学一下这个函数。<br>我计划将通过信息论的知识引入，再逐渐推导出交叉熵函数的公式，明白它的意义，再尽量理解为什么分类问题更多的用交叉熵损失函数。</p>
+</blockquote>
+<p style="text-indent: 25px">
+先参考《深度学习》花书中关于的信息论的描述：信息论的基本想法是一个不太可能的事情居然发生了，要比一个非常可能的事件发生，能提供更多的信息。
+消息说：“今天早上太阳升起”，信息量是如此之少，以至于没有必要发送；但一条消息说：“今天早上有日食”，信息量就很丰富。
+</p>
+<p style="text-indent: 25px">
+我们想要通过这种基本想法量化信息。特别是：</p>
+<ul style="background-color: silver;position: center;left: 5cm">
+<li style="color: #3e3e3e">非常可能发生的事情信息量要比较少，并且极端情况下，确保能够发生的事情应该没有信息量。</li>
+<li style="color: #3e3e3e">较不可能发生的事情具有更高的信息量。</li>
+<li style="color: #3e3e3e">独立事件应具有增量的信息。例如投掷的硬币两次正面向上传递的信息量，应该是投掷一次硬币正面朝上的信息量的两倍</li>
+</ul>
+<p style="text-indent: 25px">
+为了满足上述3个性质，我们定义一个事件x =$x$的<b>自信息</b>(self-attention)为:</p>
+<p style="text-align: center"><span>$I(x)=-logP(x)$</span><span style="padding-left: 10%">(公式1)</span></p>
+<p>
+(其中log为自然对数，底数为自然数e)。因此我们定义的$I(x)$单位是奈特(nats)。
+一奈特是以$\frac{1}{e}$的概率观测到一个事件时获得的信息量。若有材料中使用底数为2的对数，那么它的单位是比特(bits)或者香农(shannons);通过比特度量的信息只能是通过奈特度量信息的常数倍。</p>
+<img src="/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/y_log(x).png" , height="50%" width="50%" align="center">
+<p style="font-size: small;text-align: center;margin-top: 0">图1.y=-log(x)图像 由图像知：x发生的概率的越大，所拥有的信息量越少。</p>
+<p style="text-indent: 25px">
+当x是连续的，我们使用类似的关于信息的定义，但有些来源于离散形式的性质就丢失了。例如，一个具有单位密度的事件信息量仍然为0，但是不能保证它一定发生。(据我理解，应该是概率为1的事件也不一定发生吧)。
+</p>
+<p style="text-indent: 25px">
+自信息只能处理单个的输入。我们可以用<b>香农熵</b>(Shannon entropy)来对整个概率分布中的不确定性总量进行量化:
+</p>
+<p style="text-align: center">$H(x)=\mathbb{E}_{x\sim P}\left[ I(x)\right] = -\mathbb{E}_{x\sim P}\left[ logP(x)\right]$<span style="margin-left:10% ">(公式2)</span></p>
+<p>也记作$H(P)$,换言之，一个分布的香农熵是指遵循这个分布的事件所产生的期望信息总量。它给出了对依据概率分布P生成的符号进行编码所需的比特数在平均意义上的下界(当对数底数不是2时，单位将有所不同)。
+那些接近确定性的分布（输出几乎可以确定）具有较低的熵；那些接近均匀分布的概率分布具有较高的熵。（这句话想了好久才理解，可以参考这位大神的讲解<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/67490724">【机器学习】香农熵的一些知识点</a>）
+图2给出了一个说明。当x是连续的，香农熵被称为<b>微分熵</b>(differential entropy)。
+</p>
+<img src="/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/XNS.jpg" , width="80%" height="100%" align="center">
+<p style="font-size: small">图2.二值随机变量的香农熵。该图说明了更接近确定性的分布是如何具有较低的香农熵，而更接近均匀分布的分布是如何具有较高的香农熵。
+水平轴是p，表示二值随机变量等于1的概率。熵由$(p-1)log(1-p)-plog(p)$给出。当p接近0时，分布几乎是确定的，因为随机变量几乎总是0.当p接近1时，分布几乎是确定的，因为随机变量几乎总是1。
+当p=0.5时，熵是最大的，因为分布在两个结果(0和1)上是均匀的。</p>
+<p style="text-indent: 25px">
+如果对于同一个随机变量x具有两个单独的概率分布P(x)和Q(x)，可以使用<b>KL散度</b>(Kullback(KL) divergence)来衡量这两个分布的差异:
+</p>
+<p style="text-align: center">$D_{KL}\left( P||Q\right) = \mathbb{E}_{x\sim P}\left[ log\frac {P(x)}{Q(x)}\right] = \mathbb{E}_{x\sim P}\left[ logP(x)-logQ(x)\right]$<span style="margin-left: 10%">(公式3)</span></p>
+      
     </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weixinpay.png" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/zhifubao.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag"># 数学</a>
+          
+            <a href="/tags/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0/" rel="tag"># 损失函数</a>
+          
+            <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/07/08/%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2%E7%BB%8F%E5%85%B8%E8%AE%BA%E6%96%87%E5%B0%8F%E7%BB%93/" rel="next" title="语义分割经典论文小结">
+                <i class="fa fa-chevron-left"></i> 语义分割经典论文小结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -439,6 +567,20 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
 
         </div>
         
@@ -955,6 +1097,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -972,6 +1118,18 @@
       <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
     
 
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://example.com/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/';
+          this.page.identifier = '2021/07/10/交叉熵损失函数的学习/';
+          this.page.title = '交叉熵损失函数的学习';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
     
 
   
