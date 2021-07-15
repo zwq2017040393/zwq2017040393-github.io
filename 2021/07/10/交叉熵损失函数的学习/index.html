@@ -89,7 +89,7 @@
 <meta property="og:image" content="http://example.com/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/y_log(x).png">
 <meta property="og:image" content="http://example.com/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/XNS.jpg">
 <meta property="article:published_time" content="2021-07-10T10:51:00.000Z">
-<meta property="article:modified_time" content="2021-07-11T12:27:45.406Z">
+<meta property="article:modified_time" content="2021-07-15T12:08:16.359Z">
 <meta property="article:author" content="Zhanweiqi">
 <meta property="article:tag" content="数学">
 <meta property="article:tag" content="损失函数">
@@ -466,9 +466,31 @@
 水平轴是p，表示二值随机变量等于1的概率。熵由$(p-1)log(1-p)-plog(p)$给出。当p接近0时，分布几乎是确定的，因为随机变量几乎总是0.当p接近1时，分布几乎是确定的，因为随机变量几乎总是1。
 当p=0.5时，熵是最大的，因为分布在两个结果(0和1)上是均匀的。</p>
 <p style="text-indent: 25px">
-如果对于同一个随机变量x具有两个单独的概率分布P(x)和Q(x)，可以使用<b>KL散度</b>(Kullback(KL) divergence)来衡量这两个分布的差异:
+如果对于同一个随机变量x具有两个单独的概率分布$P(x)$和$Q(x)$，可以使用<b>KL散度</b>(Kullback(KL) divergence)来衡量这两个分布的差异:
 </p>
 <p style="text-align: center">$D_{KL}\left( P||Q\right) = \mathbb{E}_{x\sim P}\left[ log\frac {P(x)}{Q(x)}\right] = \mathbb{E}_{x\sim P}\left[ logP(x)-logQ(x)\right]$<span style="margin-left: 10%">(公式3)</span></p>
+<p style="text-indent: 25px">
+在离散型变量的情况下，KL散度衡量的是，当我们使用一种被设计成能够使得概率分布Q产生的消息的长度最小的编码，发送包含由概率分布P产生的符号的信息时，所需要的额外信息量
+（若果我们使用底数为2的对数时，信息量用比特衡量，但在机器学习中，我们通常用奈特和自然对数。更通俗的解释是：KL散度描述的是两个概率分布之间的差异） 
+我再把上面的式子在拆一下吧，便于理解。得到的公式如公式4(假设是离散型随机变量)。
+</p>
+<p style="text-align: center">$D_{KL}(P||Q) = \mathbb{E}_{x\sim P}\left[ logP(x)-logQ(x)\right] = \sum_{x=1}^{n}\left[ p(x_i)log{p(x_i)} - p(x_i)log{q(x_i)}\right]$<span style="margin-left: 10%">(公式4)</span></p>
+<p style="text-indent: 25px">
+由上式可以看出，当P和Q的概率分布相同时,$D_{KL}(P||Q)=0$,即两个概率之间KL散度（也叫相对熵）为0，当分布不一样时，KL散度大于0。
+</p>
+<p style="text-indent: 25px">
+KL散度有很多有用的性质，最重要的是，它是非负的。KL散度是0，当且仅当P和Q在离散型变量的情况下是相同的分布，或者是在连续型变量的情况下是“几乎处处”相同的。
+因为KL散度是非负的并且衡量的是两个分布之间的差异，它经常被用作分布之间的某种距离。然而，它并不是真的距离，因为它不是对称的：对于某些P和Q，
+$D_{KL}(P||Q) \neq D_{KL}(Q||P)$。这种非对称性意味着选择$D_{KL}(P||Q)$还是$D_{KL}(Q||P)$影响很大。
+</p>
+<p style="text-indent: 25px">
+一个和KL散度密切联系的量是<b>交叉熵</b>(cross-entropy),即$H(P,Q) = H(P)+D_{KL}(P||Q)$，它和KL散度很像，但是缺少左边一项：
+</p>
+<p style="text-align: center">$H(P,Q) = -\mathbb{E}_{x\sim P}logQ(x)$<span style="margin-left: 10%">（公式5）</span></p>
+<p>针对Q最小化交叉熵等价于最小化KL散度，因为Q并不参与被省略的那一项。由于$\sum_{i=1}^np(x_i)q(x_i) = \sum_{i=1}^nq(x_i)p(x_i)$，所以$H(P,Q) = H(Q,P)$
+，所以对于P和Q选择的顺序并不影响交叉熵的结果，若当前已知的概率分布是P，由于交叉熵只是失去了KL散度的关于P的部分，所以损失的对于Q可以看做常数，则交叉熵也是反应两个分布之间的距离，所以可以用来用作深度学习的损失函数。
+交叉熵常常与softmax函数是标配，先使预测的概率和为1，再和原本的概率分布一起计算损失。
+</p>
       
     </div>
     
