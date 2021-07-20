@@ -17,9 +17,6 @@
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
-      <tags>
-        <tag>试验</tag>
-      </tags>
   </entry>
   <entry>
     <title>交叉熵损失函数的学习</title>
@@ -196,6 +193,81 @@ U-net模型十分轻量，在图像分割使上具有十分重大的意义，之
       <tags>
         <tag>计算机视觉</tag>
         <tag>图像语义分割</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>AlexNet论文总结</title>
+    <url>/2021/07/19/AlexNet%E8%AE%BA%E6%96%87%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<blockquote>
+<p>ALexNet可以说是第一个深度神经网络，自2012年AlexNet在ImageNet比赛上获得冠军，卷积神经网络逐渐取代传统算法成为了处理计算机视觉任务的核心。AlexNet可以说是用DL来做CV的开篇之作，所以有必要好好看看这篇论文。</p>
+</blockquote>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>当时的目标识别主要还是用传统的机器学习方法，在这篇论文之前用来做训练的数据集还是相对比较小的，在数据集上表现很好的结果却在现实中遇到了很大的不同。
+直到最近才有比较大的数据集(例如LabelMe和ImageNet)。<br>
+为了能够从数百万个图片中学习识别成千上万种物体，我们需要一个一个学习能力更强的模型。然而，对象识别任务的巨大复杂性意味着这个问题甚至不能通过ImageNet这么大的数据集来指定，所以我们的模型也应该有大量的先验知识来弥补我们没有的所有数据。
+卷积神经网络（CNN）的学习能力可以通过调整深度和广度来控制，而且它们也对图像的本质（即统计的平稳性和像素相关性的局部性）做出了强有力且基本正确的假设。因此，与具有相似层数的标准前馈神经网络相比，cnn的连接和参数要少得多，因此更容易训练，而它们在理论上的最佳性能可能只略差一些。<br>
+这篇论文的特殊贡献为:
+</p>
+<ol>
+    <li>在ImageNet数据集上训练了当时最大的卷积神经网络，在ILSVRC-2010和ILSVRC-2012竞赛上得到了历史最好结果</li>
+    <li>写出了对于2D卷积的在GPU上高速优化的实现</li>
+    <li></li>
+</ol>
+
+<h1 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h1><p>ImageNet数据集有大概一千五百万章图片，22000个类别。ImageNet包含了变分辨率的图片，但是作者的系统需要不变分辨率的输入。
+因此，对矩形图像，我们首先对图像缩放，使短边长为256，然后剪出中心的256x256的图片。我们不对图像做任何其他的预处理，除了每个像素减去训练集上的平均活动（mean activity, 这个mean activity是啥。。）
+。所以我们在用未加工的RGB图像的像素值训练网络。</p>
+
+<h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1><p>网络结构如图2所示。它包含了8层——5层卷积核3层全连接。</p>
+
+<h2 id="Relu非线性函数-Rectified-Linear-Units"><a href="#Relu非线性函数-Rectified-Linear-Units" class="headerlink" title="Relu非线性函数(Rectified Linear Units)"></a>Relu非线性函数(Rectified Linear Units)</h2><p>在这个模型以前神经网络的激活函数通常为$f(x) = tanh(h)$或$f(x) = (1 + e^{-x})^{-1}$,根据梯度下降的训练时间，这些饱和的非线性函数比不饱和激活函数$f(x) = max(0,x)$(relu)慢。
+如图1，论文中的这个图展示了ReLU和传统激活函数的速度差异。
+</p>
+<img src="/2021/07/19/AlexNet%E8%AE%BA%E6%96%87%E6%80%BB%E7%BB%93/img1.png" , width="100%" height="30%" align="center">
+<p style="font-size: small;text-align: center">图1. </p>
+
+<h2 id="在多GPU上训练"><a href="#在多GPU上训练" class="headerlink" title="在多GPU上训练"></a>在多GPU上训练</h2><p>作者当时的条件有点艰苦，只有GTX580,3GB的显卡，这限制了大型网络在它上面的训练。聪明的作者把网络设计成了在两张GPU上训练的结构，这两个GPU能够直接读写相互的内存而不通过宿主机的内存。
+作者使用的平行模式在每张GPU上放置一半的kernels(或neurons),并有另一个技巧：GPU只在某些层通信。具体在那些层通信也是要经过选择的。
+</p>
+
+<h2 id="局部响应标准化（Local-Response-Normalization）"><a href="#局部响应标准化（Local-Response-Normalization）" class="headerlink" title="局部响应标准化（Local Response Normalization）"></a>局部响应标准化（Local Response Normalization）</h2><p>说实话，我现在(2021/1/19,15:51)看到这个词完全是懵的，这是个啥。。继续看看论文吧。。<br>
+一般ReLU不需要将输入标准化来防止饱和（例如sigmoid函数在x过大或过小时导数趋近于0），当输入为正值时，那个神经元将发生学习。然而，作者仍然发现了局部标准化能增加泛化能力。
+把卷积核i的位置（x,y）的神经元记为$a_{x,y}^{i}$,并对其使用ReLU函数，局部标准化的结果$b_{x,y}^{i}$被定义为:
+$$ b_{x,y}^{i} = a_{x,y}^{i} / {\left( k+\alpha {\sum_{j=max(0,i-n/2)}^{min(N-1,i+n/2)}}{\left( a_{x,y}^{i}\right) }^{2}\right) }^{\beta} $$
+现在的模型都不用这个了，故不详细说了，从公式也挺好看明白的。
+</p>
+
+<h2 id="重叠的池化"><a href="#重叠的池化" class="headerlink" title="重叠的池化"></a>重叠的池化</h2><p>文章中的实现用到了重叠的池化（Overlapping Pooling），即步长s=2,尺寸z=3，对比s=2,z=2的不重叠的池化，识别错误率会减少0.3%。我想用Overlapping的池化大概会丢失更少的语义信息吧！</p>
+
+<h2 id="总体结构"><a href="#总体结构" class="headerlink" title="总体结构"></a>总体结构</h2><p>如图2为论文中的模型结构图，网络包含了8层有权重的层：前5层为卷积层，后3层是全连接层。最后一层产生1000路的输出，代表1000类标签的概率分布。
+图3是论文中关于网络结构的描述，我就不赘述了。
+</p>
+<img src="/2021/07/19/AlexNet%E8%AE%BA%E6%96%87%E6%80%BB%E7%BB%93/img2.png" , height="100%" width="100%" align="center" alt="图2">
+<p style="text-align: center;font-size: small">图2</p>
+<img src="/2021/07/19/AlexNet%E8%AE%BA%E6%96%87%E6%80%BB%E7%BB%93/img3.png" , height="100%" width="100%" align="center" alt="图3">
+<p style="font-size: small;text-align: center">图3</p>
+
+<h1 id="减少过拟合"><a href="#减少过拟合" class="headerlink" title="减少过拟合"></a>减少过拟合</h1><br>
+
+<blockquote>
+<p>即使ImageNet有非常多的图片了，但是还是不足以防止像ALexNet这么大的模型的过拟合。所以需要一些防止过拟合的办法。</p>
+</blockquote>
+<h2 id="数据增强"><a href="#数据增强" class="headerlink" title="数据增强"></a>数据增强</h2><p>第一个方法是从256x256的图片中随机提取224x224的子图片(patch)（包括它们的水平倒影）将他们放入网络中训练，论文中用这种方法多产生了2048倍的图片[256-224=32,32*32=1024,1024*2=2048],
+（这么一看不是随机了，而是能抽取的全都抽取了。。）。在测试时，抽取5个224x224的patch(四个角的和中间的，记录他们的水平倒影，这样就有10个图片了)，然后放入网络中预测， 然后对10个预测的结果进行平均（softmax之后的）。
+</p>
+<p>第二个方法是改变训练数据上RGB通道上的强度。论文对RGB通道数据使用了PCA来拓展数据集（论文说的我看了半天没看懂。。）</p>
+
+<h2 id="Dropout"><a href="#Dropout" class="headerlink" title="Dropout"></a>Dropout</h2><p>Dropout是一种非常有效的防止过拟合的方法。每个神经元有一定的概率被隐藏（论文中是0.5）。被隐藏得神经元以某种方式不参与向前和向后的传播。所以每次进行输入后，
+神经网络呈现一个不同的结构，但是所有结构是分享权重的。这个技术减少了神经元之间的协同适应，因为一个神经元不能依赖其他神经元的出现。因此，它被迫学习与其他神经元的许多不同随机子集结合使用的更健壮的特征。
+在测试的时候，使用所有的神经元，但是把它们的输出乘以0.5，这样做使输出的期望值和dropout之前的期望值一样。作者在全连接层使用了Dropout。Dropout能有效阻止过拟合，Dropout大概使网络收敛地迭代次数增加到2倍。
+</p>]]></content>
+      <categories>
+        <category>计算机视觉</category>
+        <category>分类</category>
+      </categories>
+      <tags>
+        <tag>深度学习</tag>
+        <tag>计算机视觉</tag>
+        <tag>分类</tag>
       </tags>
   </entry>
 </search>
