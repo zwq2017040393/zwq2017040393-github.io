@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="pytorch," />
 
 
 
@@ -79,15 +79,22 @@
 
 
 
-<meta name="description" content="这里将展示我的在学习中收获的一些计算机知识，包括但不局限于计算机视觉，深度学习，人工智能,python, c++,算法以及一些网站开发的知识。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="ZWQ&#39;s zoom">
-<meta property="og:url" content="http://example.com/archives/2021/07/index.html">
+<meta name="description" content="最近在pytorch的学习中，发现了一个之前没有注意过的地方。就是在利用pytorch的广播机制的过程中，如果是在inplace操作中，那么有可能会产生错误。如下代码所示：   123import torch x &#x3D; torch.FloatTensor(1, 3, 1)y &#x3D; torch.FloatTensor(3, 1, 7)  运行程序，在控制台中输入x.add_(y).size()得到的结果">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pytorch的inplace广播机制注意事项">
+<meta property="og:url" content="http://example.com/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/index.html">
 <meta property="og:site_name" content="ZWQ&#39;s zoom">
-<meta property="og:description" content="这里将展示我的在学习中收获的一些计算机知识，包括但不局限于计算机视觉，深度学习，人工智能,python, c++,算法以及一些网站开发的知识。">
+<meta property="og:description" content="最近在pytorch的学习中，发现了一个之前没有注意过的地方。就是在利用pytorch的广播机制的过程中，如果是在inplace操作中，那么有可能会产生错误。如下代码所示：   123import torch x &#x3D; torch.FloatTensor(1, 3, 1)y &#x3D; torch.FloatTensor(3, 1, 7)  运行程序，在控制台中输入x.add_(y).size()得到的结果">
 <meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/img.png">
+<meta property="og:image" content="http://example.com/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/img_1.png">
+<meta property="og:image" content="http://example.com/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/img_2.png">
+<meta property="article:published_time" content="2021-07-25T06:57:59.000Z">
+<meta property="article:modified_time" content="2021-07-25T09:37:10.465Z">
 <meta property="article:author" content="Zhanweiqi">
+<meta property="article:tag" content="pytorch">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/img.png">
 
 
 
@@ -117,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/archives/2021/07/"/>
+  <link rel="canonical" href="http://example.com/2021/07/25/pytorch的inplace广播机制注意事项/"/>
 
 
 
 
 
-  <title>归档 | ZWQ's zoom</title>
+  <title>pytorch的inplace广播机制注意事项 | ZWQ's zoom</title>
   
 
 
@@ -152,7 +159,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -290,222 +297,234 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mytouxiang.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZWQ's zoom">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">pytorch的inplace广播机制注意事项</h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-25T14:57:59+08:00">
+                2021-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 5 篇日志。 继续努力。
-      </span>
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pytorch/" itemprop="url" rel="index">
+                    <span itemprop="name">pytorch</span>
+                  </a>
+                </span>
 
-      
-
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2021">2021</h1>
-          </div>
-        
-        
 
-        
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/07/25/pytorch的inplace广播机制注意事项/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/" itemprop="url">
-              
-                <span itemprop="name">pytorch的inplace广播机制注意事项</span>
-              
-            </a>
-        
-      </h2>
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o">本站总阅读量</i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2021-07-25T14:57:59+08:00"
-              content="2021-07-25" >
-          07-25
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+          
 
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在pytorch的学习中，发现了一个之前没有注意过的地方。就是在利用pytorch的广播机制的过程中，如果是在inplace操作中，那么有可能会产生错误。如下代码所示：
+</p>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch </span><br><span class="line">x = torch.FloatTensor(<span class="number">1</span>, <span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line">y = torch.FloatTensor(<span class="number">3</span>, <span class="number">1</span>, <span class="number">7</span>) </span><br></pre></td></tr></table></figure>
+<p>运行程序，在控制台中输入<b>x.add_(y).size()</b>得到的结果如下图：</p>
+<img src="/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/img.png" , width="100%" height="100%">
+<p>可知上面的语句无法得到正确执行，有错误提示知原因是x和y的维度不匹配，x和y之间并没有广播机制起作用。接下来，在控制台中输入<b>x.add_(y).size()</b>得到的结果如下图：</p>
+<img src="/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/img_1.png">
+<p>通过结果可以知道，当此操作不是inplace操作时，广播机制起了作用。下面我们修改代码，来看看什么时候inplace操作中的广播机制可以起作用。</p>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line">x = torch.FloatTensor(<span class="number">3</span>, <span class="number">3</span>, <span class="number">7</span>)</span><br><span class="line">y = torch.FloatTensor(<span class="number">1</span>, <span class="number">1</span>, <span class="number">7</span>)</span><br><span class="line">a = torch.FloatTensor(<span class="number">5</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">1</span>)</span><br><span class="line">b = torch.FloatTensor(<span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>运行程序，在控制台中输入如图：</p>
+<img src="/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/img_2.png">
+<p>可知a与b，x与y的相加操作都可行，为什么上面的inplace操作不可行，而这两个可行呢？其实答案很简单：<br>
+仔细观察最上方的代码，x的形状是[1,3,1],y的形状是[3,1,7],想在x的基础上加上y，这里需要区分inplace操作和非inplace操作，由最上面的两个图片知，非inplace相加后，
+结果尺寸为[3,3,7]，而inplace操作不可行，这里的原因应该是：inplace要将结果保存到x本身，而x的形状为[1,3,1]，所以操作不成功。
+</p>
+<p>最下方的两个能成功的原因是：a和b相加的结果尺寸为[5,3,4,1]，与a一致，x和y的相加结果尺寸为[3,3,7]，与x的尺寸一致，这样就能把结果保存到a和x中啦！
+</p>
+<p>这是今天学习中的一点小收获，写成博客，希望能从本质进行理解，以后忘了也更容易想起来。</p>
 
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2021/07/19/AlexNet%E8%AE%BA%E6%96%87%E6%80%BB%E7%BB%93/" itemprop="url">
-              
-                <span itemprop="name">AlexNet论文总结</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2021-07-19T08:28:57+08:00"
-              content="2021-07-19" >
-          07-19
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2021/07/10/%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E5%AD%A6%E4%B9%A0/" itemprop="url">
-              
-                <span itemprop="name">交叉熵损失函数的学习</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2021-07-10T18:51:00+08:00"
-              content="2021-07-10" >
-          07-10
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2021/07/08/%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2%E7%BB%8F%E5%85%B8%E8%AE%BA%E6%96%87%E5%B0%8F%E7%BB%93/" itemprop="url">
-              
-                <span itemprop="name">语义分割经典论文小结</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2021-07-08T10:32:45+08:00"
-              content="2021-07-08" >
-          07-08
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2021/07/06/hello-world/" itemprop="url">
-              
-                <span itemprop="name">Hello World</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2021-07-06T15:22:57+08:00"
-              content="2021-07-06" >
-          07-06
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weixinpay.png" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/zhifubao.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pytorch/" rel="tag"># pytorch</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/07/19/AlexNet%E8%AE%BA%E6%96%87%E6%80%BB%E7%BB%93/" rel="next" title="AlexNet论文总结">
+                <i class="fa fa-chevron-left"></i> AlexNet论文总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -513,6 +532,20 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
 
         </div>
         
@@ -1029,6 +1062,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -1046,6 +1083,18 @@
       <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
     
 
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://example.com/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/';
+          this.page.identifier = '2021/07/25/pytorch的inplace广播机制注意事项/';
+          this.page.title = 'pytorch的inplace广播机制注意事项';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
     
 
   
@@ -1433,26 +1482,6 @@
   
 
   
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

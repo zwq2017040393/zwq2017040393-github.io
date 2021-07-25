@@ -270,4 +270,36 @@ $$ b_{x,y}^{i} = a_{x,y}^{i} / {\left( k+\alpha {\sum_{j=max(0,i-n/2)}^{min(N-1,
         <tag>分类</tag>
       </tags>
   </entry>
+  <entry>
+    <title>pytorch的inplace广播机制注意事项</title>
+    <url>/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</url>
+    <content><![CDATA[<p>最近在pytorch的学习中，发现了一个之前没有注意过的地方。就是在利用pytorch的广播机制的过程中，如果是在inplace操作中，那么有可能会产生错误。如下代码所示：
+</p>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> torch </span><br><span class="line">x = torch.FloatTensor(<span class="number">1</span>, <span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line">y = torch.FloatTensor(<span class="number">3</span>, <span class="number">1</span>, <span class="number">7</span>) </span><br></pre></td></tr></table></figure>
+<p>运行程序，在控制台中输入<b>x.add_(y).size()</b>得到的结果如下图：</p>
+<img src="/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/img.png" , width="100%" height="100%">
+<p>可知上面的语句无法得到正确执行，有错误提示知原因是x和y的维度不匹配，x和y之间并没有广播机制起作用。接下来，在控制台中输入<b>x.add_(y).size()</b>得到的结果如下图：</p>
+<img src="/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/img_1.png">
+<p>通过结果可以知道，当此操作不是inplace操作时，广播机制起了作用。下面我们修改代码，来看看什么时候inplace操作中的广播机制可以起作用。</p>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line">x = torch.FloatTensor(<span class="number">3</span>, <span class="number">3</span>, <span class="number">7</span>)</span><br><span class="line">y = torch.FloatTensor(<span class="number">1</span>, <span class="number">1</span>, <span class="number">7</span>)</span><br><span class="line">a = torch.FloatTensor(<span class="number">5</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">1</span>)</span><br><span class="line">b = torch.FloatTensor(<span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>运行程序，在控制台中输入如图：</p>
+<img src="/2021/07/25/pytorch%E7%9A%84inplace%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/img_2.png">
+<p>可知a与b，x与y的相加操作都可行，为什么上面的inplace操作不可行，而这两个可行呢？其实答案很简单：<br>
+仔细观察最上方的代码，x的形状是[1,3,1],y的形状是[3,1,7],想在x的基础上加上y，这里需要区分inplace操作和非inplace操作，由最上面的两个图片知，非inplace相加后，
+结果尺寸为[3,3,7]，而inplace操作不可行，这里的原因应该是：inplace要将结果保存到x本身，而x的形状为[1,3,1]，所以操作不成功。
+</p>
+<p>最下方的两个能成功的原因是：a和b相加的结果尺寸为[5,3,4,1]，与a一致，x和y的相加结果尺寸为[3,3,7]，与x的尺寸一致，这样就能把结果保存到a和x中啦！
+</p>
+<p>这是今天学习中的一点小收获，写成博客，希望能从本质进行理解，以后忘了也更容易想起来。</p>
+
+]]></content>
+      <categories>
+        <category>pytorch</category>
+      </categories>
+      <tags>
+        <tag>pytorch</tag>
+      </tags>
+  </entry>
 </search>
